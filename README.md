@@ -3,8 +3,8 @@
 # Servicio Social UdG Coin
 
 ## Introduccion
-[Servicio Social UdG Coin][udgcoin] es una suite de applicaciones blockchain **_open sources_** que  permiten a la universidad proponer actividades de distintos rubros entre su comunidad estudiantil y a sus estudiantes realizar estas actividades que retribuyen horas de servicio social.
-[Servicio Social UdG Coin][udgcoin] proporciona una interfaz web que controla las actividades propuestas lleva el registro de horas de servicio por alumno.
+[Servicio Social UdG Coin][udgcoin] es una suite de aplicaciones blockchain con licencia **_open sources_** que  permiten a la universidad proponer actividades de distintos rubros entre su comunidad estudiantil y a sus estudiantes realizar estas actividades que retribuyen horas de servicio social.
+[Servicio Social UdG Coin][udgcoin] proporciona una interfaz web que controla las actividades propuestas y lleva el registro de horas de servicio por alumno.
 
 ## Objectivos
 Los objetivos generales de esta version son:
@@ -40,8 +40,8 @@ El sistema operativo usado es Debian 9 Os.
 La documentacion completa de todos los modulos del software puede ser encontrada en el directorio ***doc/***
 
 Este repositorio gestiona todo lo necesario para instalar y configurar correctamente [Servicio Social UdG Coin][udgcoin]
-Todos los requerimientos pueden ser encontrados en  ***doc/requirements.md***
-Puedes ver el modelo de la infrestructura en  ***doc/infrastrucre.md***
+Todos los requerimientos pueden ser encontrados en  ***requirements.md***
+Puedes ver el modelo de la infrestructura en  ***doc/infrastructure.md***
 
 ## Desarrollo
 La metodologia usada es agile, donde tomamos ventaja de las diferentes sessiones.
