@@ -6,6 +6,8 @@
 [Servicio Social UdG Coin][udgcoin] es una suite de aplicaciones blockchain con licencia **_open sources_** que  permiten a la universidad proponer actividades de distintos rubros entre su comunidad estudiantil y a sus estudiantes realizar estas actividades que retribuyen horas de servicio social.
 [Servicio Social UdG Coin][udgcoin] proporciona una interfaz web que controla las actividades propuestas y lleva el registro de horas de servicio por alumno.
 
+<div style="page-break-after: always;"></div>
+
 ## Objectivos
 Los objetivos generales de esta version son:
 
