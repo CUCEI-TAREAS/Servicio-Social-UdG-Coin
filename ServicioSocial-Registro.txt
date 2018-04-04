@@ -1,0 +1,225 @@
+pragma solidity ^0.4.18;
+
+// Este contrato llevara a cabo los registros de las empresas y alumnos al servicio
+// social y el registro de los alumnos en alguna de las empresas ofertadas
+// registrandose con las cuentas
+contract SocialService{
+    //**********variables**************
+    //struct para el registro del alumno
+    struct Alumno {
+        string alumName;
+        string schoolName;
+        uint schoolCode;
+    }
+    
+    mapping (address => Alumno) alumnos;
+    address[] public alumnoAccts;
+    
+    //struct para el registro de la empresa
+    struct Institution {
+        string instName;
+        string locations;
+        string personRequest;
+    }
+    
+    mapping (address => Institution) institutions;
+    address[] public institutionAccts;
+    
+    //struct para los registros de alumnos a empresas
+    struct Alumvsinst {
+        string name;
+        uint code;
+        address inst;
+    }
+    
+    mapping (address => Alumvsinst) alumvsinst;
+    
+     uint numInstitutions;
+     uint numAlumnos;
+     address[] public selectionInst;
+    //*************Funciones*******************
+    // Funcion para registrar alumnos
+    function setAlumno (address _addr, string _alumName, string _schoolName,
+                        uint _schoolCode) public{
+                            var alumno = alumnos [_addr];
+                            
+                            alumno.alumName = _alumName;
+                            alumno.schoolName = _schoolName;
+                            alumno.schoolCode = _schoolCode;
+                            
+                            alumnoAccts.push(_addr) -1;
+                        }
+    // Funcion para registrar instituciones / empresas que requieren de prestadores de servicio                   
+    function setInstitution (address _addr, string _instName, string _locations,
+                             string _personRequest) public{
+                            var institution = institutions [_addr];
+                            
+                            institution.instName = _instName;
+                            institution.locations = _locations;
+                            institution.personRequest = _personRequest;
+                            
+                            institutionAccts.push(_addr) -1;
+                        }
+    // Funcion para obtener todas las cuentas de los alumnos que se han registrado
+    function getAlumnoAccts() view public returns (address[]) {
+        return alumnoAccts;
+    }
+    // Funcion para obtener todas las cuentas intituciones/empresas que se han registrado
+    function getInstitutionAccts() view public returns (address[]) {
+        return institutionAccts;
+    }
+    // Funcion para obtener los datos de una empresa ingresando su cuenta
+    function getInstitution(address _addr) view public returns (string, string, string ){
+        return(institutions[_addr].instName, institutions[_addr].locations, institutions[_addr].personRequest);
+    }
+    
+    // Aqui el estudiante se registrara en la intitucion/empresa de su conveniencia en espera de aprovacion
+    function selectInstitution (address _addr, string _name, uint _code, address _acctinst) public {
+        var alum = alumvsinst [_addr];
+        
+        alum.name = _name;
+        alum.code = _code;
+        alum.inst = _acctinst;
+        
+        selectionInst.push(_addr) -1;
+   
+    }
+    // funcion para obtener a que empresa se inscribio el alumno mediante la cuenta del alumno
+    function getSelInst(address _addr) view public returns (string, uint, address){
+        return(alumvsinst[_addr].name, alumvsinst[_addr].code, alumvsinst[_addr].inst);
+    }
+    
+}
+    
+    function getInstitutionAccts() view public returns (address[]) {
+        return institutionAccts;
+    }
+    
+    function getInstitution(address _addr) view public returns (string, string, string ){
+        return(institutions[_addr].instName, institutions[_addr].locations, institutions[_addr].personRequest);
+    }
+    
+    
+    //Aqui el estudiante eligira una de las opciones que vera
+    function selectInstitution (address _addr) public {
+        
+        //comprobamos que el que esta realizando la solicitud sea el estudiante
+        require( msg.sender == student );
+    }
+    
+    //Aqui se acepta o no, la opcion de servicio elegido por el Estudiante
+    function confirmService (bytes32 opt) public {
+        //comprobamos que el que acepta la solicitud sea el encargado del proceso
+        //del servico
+        require ( msg.sender == judgeservice );
+        //si se ingresa un "1" en "opt" el servicio elegido por el Estudiante es Aceptado
+        //en caso contrario se deniega el acceso al servicio elegido
+        if ( opt == "si" ){
+            state = State.Accept;
+            opt = 0;
+        } else {
+            state = State.notAccept;
+        }
+    }
+    
+    // Se valida que se presto el servicio correspondiente por parte de la empresa
+    // o institucion
+    function validateInst (uint respinst) public {
+        // Se verifica que sea el encarcado de la institucion o empresa
+        require ( msg.sender == judgeinst2);
+        //para que se pueda validar este servicio prestado a la institucion o empresa
+        //este tuvo que haber sido aceptado anteriormente
+        require ( state == State.Accept );
+        // si la respuesta de la institucion (respinst) o empresa es 1, la empresa
+        //esta validando el servicio realizado
+        if( respinst == 1 && VI == 0 ){
+            validation = validation + 1;
+            // se resetea la respuesta para evitar que se quede en 1 y active los
+            // indicadoros Accept y Executed
+            respinst == 0;
+        } else {
+            validation = validation + 0;
+        }
+        //agregamos un 1 al indicador para que no vuelva a validar
+        VI = 1;
+    }
+    
+    // Valida la persona encargada de los procesos de servicio
+    function validateService (uint respser) public {
+        // Se verifica que sea el encarcado de los procesos de servicio
+        require ( msg.sender == judgeservice );
+        //para que se pueda validar este servicio prestado a la institucion o empresa
+        //este tuvo que haber sido aceptado anteriormente
+        require ( state == State.Accept );
+        // si la respuesta de la persona de servicio (respser) es 1, la persona
+        //esta validando el servicio realizado
+        if( respser == 1 && VS == 0){
+            validation = validation + 1;
+            respser = 0;
+        } else {
+            validation = validation + 0;
+        }
+        //agregamos un 1 al indicador para que no vuelva a validar
+        VS = 1;
+    }
+    
+    // revisamos que el numero de validaciones se cumpla
+    function validateJudges() public {
+        // si se cumple el numero de validaciones se puede ejecutar el pago
+        // de servicio
+        if ( validation == 2 ){
+            payStatus = PayStatus.Executed;
+        } else {
+            payStatus = PayStatus.notExecuted;
+        }
+        
+    }
+    
+    
+    // La institucion o empresa propone pago por servicio prestado
+    // este pago queda en espera
+    function giveCripto () payable public {
+        // Se verifica que sea la institucion o empresa
+        // falta agregar indicador para que no se pueda mover la cantidad
+        require ( msg.sender == judgeinst2 );
+    }
+    
+    // se muestra la cantidad de ether que se propone pagar en la transaccion 
+    //que se realizo, esperando validacion para poder ser tranferida a la cuenta
+    //de alumno
+    function showBalance () public constant returns ( uint ) {
+        return this.balance;
+    }
+    
+    // la institucion o empresa puede cancelar el pago que se prensento
+    // ***falta agregar que se valide la cancelacion por parte de la escuela y
+    // encargado de servicio social para evitar que la institucion o empresa
+    // cancele la transaccion sin justificacion
+    function payCancel () public {
+        require ( msg.sender == judgeinst2 );
+        // se regresa la cantidad propuesta a la institucion o empresa
+        judgeinst2.transfer(this.balance);
+    }
+    
+    //ya que esta todo validado se confirma el pago por parte de la institucion
+    // o empresa
+    function confirmCripto() public {
+        // se valida que sea la institucion o empresa la que de la confirmacion de pago,
+        //Que la institucion o empresa  haya sido validada anteriormente y Que
+        // se tengan las validaciones necesarias para poder realizar el pago
+        require ( msg.sender == judgeinst2 );
+        require ( state == State.Accept );
+        require ( payStatus == PayStatus.Executed );
+        // si cumple se efectua el pago tranfiriendo la cantidad al estudiante por payStatus
+        //por sus servicios prestados
+        student.transfer(this.balance);
+        // se reician los parametros
+        state = State.notAccept;
+        payStatus = PayStatus.notExecuted;
+        validation = 0;
+        VI = 0;
+        VS = 0;
+    }
+    
+    
+}
