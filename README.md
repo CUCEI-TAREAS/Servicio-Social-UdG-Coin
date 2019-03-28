@@ -8,7 +8,7 @@
 
 <div style="page-break-after: always;"></div>
 
-## Objectivos
+## Objetivos
 Los objetivos generales de esta version son:
 
 * Crear un plan de trabajo con metas alcanzables considerando el deadline el martes 3 de abril a las 23:00.
